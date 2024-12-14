@@ -1,1 +1,50 @@
-<p>this is a new repo</p>
+const express = require("express");
+const app = express();
+const mongoose = require("mongoose");
+const path = require("path");
+const engine = require('ejs-mate');
+const ejs=require("ejs");
+const { extname } = require("path/posix");
+const MONGO_URL = "mongodb://127.0.0.1:27017/YASHINFRA";
+
+main()
+  .then(() => {
+    console.log("connected to DB");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+async function main() {
+  await mongoose.connect(MONGO_URL);
+}
+
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+app.use(express.urlencoded({ extended: true }));
+app.engine('ejs', engine);
+
+app.use(express.static(path.join(__dirname,"/public")));
+
+
+
+app.get("/", (req, res) => {
+    res.send("Hi, I am root");
+  });
+
+  app.get("/navbar",(req,res)=>{
+    res.render("./listings/show.ejs")
+  })
+  app.get("/homepage",(req,res)=>{
+    res.render("./listings/homepage.ejs")
+  })
+
+  app.use('/images',express.static('C:\Users\Ajinkya\Desktop\SAIYASH-ENTERPRISES\public\images\logo.png'));
+  app.get('/image',(req,res)=>{
+    res.sendFile('C:\Users\Ajinkya\Desktop\SAIYASH-ENTERPRISES\public\images\logo.png');
+  })
+
+app.listen(3001, () => {
+    console.log("server is listening to port 3001");
+  });
+  
